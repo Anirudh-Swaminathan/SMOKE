@@ -45,14 +45,26 @@ def do_kitti_detection_evaluation(dataset,
 
     logger.info("Evaluate on KITTI dataset")
     output_dir = os.path.abspath(output_folder)
-    os.chdir('../smoke/data/datasets/evaluation/kitti/kitti_eval')
+    print("---ANI! output_dir - ", output_dir, "---")
+    print("---ANI! os.getcwd() - ", os.getcwd(), "---")
+    cur_dir = os.getcwd()
+    os.chdir('./smoke/data/datasets/evaluation/kitti/')
+    # ch_dir = os.path.join(cur_dir, "./smoke/data/datasets/evaluation/kitti/kitti_eval")
+    # os.chdir('./smoke/data/datasets/evaluation/kitti/kitti_eval')
+    # os.chdir(ch_dir)
+    print("---ANI! output_dir after first change - ", output_dir, "---")
+    print("---ANI! os.getcwd() after first change - ", os.getcwd(), "---")
     label_dir = getattr(dataset, 'label_dir')
     if not os.path.isfile('evaluate_object_3d_offline'):
         subprocess.Popen('g++ -O3 -DNDEBUG -o evaluate_object_3d_offline evaluate_object_3d_offline.cpp', shell=True)
     command = "./evaluate_object_3d_offline {} {}".format(label_dir, output_dir)
     output = subprocess.check_output(command, shell=True, universal_newlines=True).strip()
     logger.info(output)
-    os.chdir('../tools')
+    ch_dir = os.path.join(cur_dir, "tools")
+    # os.chdir('../tools')
+    os.chdir(ch_dir)
+    print("---ANI! output_dir after second change - ", output_dir, "---")
+    print("---ANI! os.getcwd() after second change - ", os.getcwd(), "---")
 
 
 def generate_kitti_3d_detection(prediction, predict_txt):

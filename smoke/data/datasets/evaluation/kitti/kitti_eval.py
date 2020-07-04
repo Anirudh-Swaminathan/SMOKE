@@ -55,7 +55,8 @@ def do_kitti_detection_evaluation(dataset,
     print("---ANI! os.getcwd() after first change - ", os.getcwd(), "---")
     label_dir = getattr(dataset, 'label_dir')
     if not os.path.isfile('evaluate_object_3d_offline'):
-        subprocess.Popen('g++ -O3 -DNDEBUG -o evaluate_object_3d_offline evaluate_object_3d_offline.cpp', shell=True)
+        # subprocess.Popen('g++ -O3 -DNDEBUG -o evaluate_object_3d_offline evaluate_object_3d_offline.cpp', shell=True)
+        subprocess.call('g++ -O3 -DNDEBUG -o evaluate_object_3d_offline evaluate_object_3d_offline.cpp', shell=True)
     command = "./evaluate_object_3d_offline {} {}".format(label_dir, output_dir)
     output = subprocess.check_output(command, shell=True, universal_newlines=True).strip()
     logger.info(output)

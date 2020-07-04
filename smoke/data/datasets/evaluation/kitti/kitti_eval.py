@@ -57,6 +57,9 @@ def do_kitti_detection_evaluation(dataset,
     if not os.path.isfile('evaluate_object_3d_offline'):
         # subprocess.Popen('g++ -O3 -DNDEBUG -o evaluate_object_3d_offline evaluate_object_3d_offline.cpp', shell=True)
         subprocess.call('g++ -O3 -DNDEBUG -o evaluate_object_3d_offline evaluate_object_3d_offline.cpp', shell=True)
+        logger.info("Compiling executable for evaluate_object_3d_offline for first time!")
+    else:
+        logger.info("Compiled executable evaluate_object_3d_offline already exists!")
     command = "./evaluate_object_3d_offline {} {}".format(label_dir, output_dir)
     output = subprocess.check_output(command, shell=True, universal_newlines=True).strip()
     logger.info(output)

@@ -5,3 +5,13 @@
 /tools/logs/
 
 .idea
+
+# added by anicodebreaker on July 2, 2020
+# ignore generated __pycache__ files
+__pycache__/
+
+# ignore the datasets folder
+datasets/
+
+# ignore the *so files
+*.so

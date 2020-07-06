@@ -61,6 +61,8 @@ def do_kitti_detection_evaluation(dataset,
     else:
         logger.info("Compiled executable evaluate_object_offline already exists!")
     logger.info("---ANI! label_dir: {} ---\n---ANI! output_dir: {} ---\n".format(label_dir, output_dir))
+    label_dir = os.path.join(cur_dir, 'datasets/kitti/training/label_2')
+    label_dir = os.path.abspath(label_dir)
     command = "./evaluate_object_offline {} {}".format(label_dir, output_dir)
     logger.info("---ANI! command: {} ---".format(command))
     output = subprocess.check_output(command, shell=True, universal_newlines=True).strip()

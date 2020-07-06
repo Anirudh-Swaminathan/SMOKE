@@ -34,6 +34,9 @@ def do_kitti_detection_evaluation(dataset,
                                   output_folder,
                                   logger
                                   ):
+    label_dir = getattr(dataset, 'label_dir')
+    output_dir = os.path.abspath(output_folder)
+    logger.info("---ANI! label_dir: {} ---\n---ANI! output_dir: {} ---\n".format(label_dir, output_dir))
     predict_folder = os.path.join(output_folder, 'data')  # only recognize data
     mkdir(predict_folder)
 
@@ -45,6 +48,7 @@ def do_kitti_detection_evaluation(dataset,
 
     logger.info("Evaluate on KITTI dataset")
     output_dir = os.path.abspath(output_folder)
+    logger.info("---ANI! label_dir: {} ---\n---ANI! output_dir: {} ---\n".format(label_dir, output_dir))
     print("---ANI! output_dir - ", output_dir, "---")
     print("---ANI! os.getcwd() - ", os.getcwd(), "---")
     cur_dir = os.getcwd()
@@ -54,13 +58,17 @@ def do_kitti_detection_evaluation(dataset,
     print("---ANI! output_dir after first change - ", output_dir, "---")
     print("---ANI! os.getcwd() after first change - ", os.getcwd(), "---")
     label_dir = getattr(dataset, 'label_dir')
+    eval_label_dir = os.path.join(output_folder, 'data')
+    label_dir = os.path.abspath(eval_label_dir)
     if not os.path.isfile('evaluate_object_offline'):
         # subprocess.Popen('g++ -O3 -DNDEBUG -o evaluate_object_3d_offline evaluate_object_3d_offline.cpp', shell=True)
         subprocess.call('g++ -O3 -DNDEBUG -o evaluate_object_offline evaluate_object_offline.cpp', shell=True)
         logger.info("Compiling executable for evaluate_object_offline for first time!")
     else:
         logger.info("Compiled executable evaluate_object_offline already exists!")
+    logger.info("---ANI! label_dir: {} ---\n---ANI! output_dir: {} ---\n".format(label_dir, output_dir))
     command = "./evaluate_object_offline {} {}".format(label_dir, output_dir)
+    logger.info("---ANI! command: {} ---".format(command))
     output = subprocess.check_output(command, shell=True, universal_newlines=True).strip()
     logger.info(output)
     ch_dir = os.path.join(cur_dir, "tools")

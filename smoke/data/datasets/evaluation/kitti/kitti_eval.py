@@ -54,16 +54,20 @@ def do_kitti_detection_evaluation(dataset,
     print("---ANI! output_dir after first change - ", output_dir, "---")
     print("---ANI! os.getcwd() after first change - ", os.getcwd(), "---")
     label_dir = getattr(dataset, 'label_dir')
-    if not os.path.isfile('evaluate_object_offline'):
+    logger.info("---ANI! label_dir before manual change is {} ---".format(label_dir))
+    # TODO Change name to evaluate_object_offline for 40 points
+    # TODO Change name to evaluate_object_3d_offline for 11 points
+    executable_name = "evaluate_object_3d_offline"
+    if not os.path.isfile(executable_name):
         # subprocess.Popen('g++ -O3 -DNDEBUG -o evaluate_object_3d_offline evaluate_object_3d_offline.cpp', shell=True)
-        subprocess.call('g++ -O3 -DNDEBUG -o evaluate_object_offline evaluate_object_offline.cpp', shell=True)
-        logger.info("Compiling executable for evaluate_object_offline for first time!")
+        subprocess.call('g++ -O3 -DNDEBUG -o {} {}.cpp'.format(executable_name, executable_name), shell=True)
+        logger.info("Compiling executable for {} for first time!".format(executable_name))
     else:
-        logger.info("Compiled executable evaluate_object_offline already exists!")
+        logger.info("Compiled executable {} already exists!".format(executable_name))
     logger.info("---ANI! label_dir: {} ---\n---ANI! output_dir: {} ---\n".format(label_dir, output_dir))
     label_dir = os.path.join(cur_dir, 'datasets/kitti/training/label_2')
     label_dir = os.path.abspath(label_dir)
-    command = "./evaluate_object_offline {} {}".format(label_dir, output_dir)
+    command = "./{} {} {}".format(executable_name, label_dir, output_dir)
     logger.info("---ANI! command: {} ---".format(command))
     output = subprocess.check_output(command, shell=True, universal_newlines=True).strip()
     logger.info(output)

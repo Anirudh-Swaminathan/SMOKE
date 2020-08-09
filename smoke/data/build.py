@@ -34,6 +34,8 @@ def build_dataset(cfg, transforms, dataset_catalog, is_train=True):
         )
     datasets = []
     for dataset_name in dataset_list:
+        logger = logging.getLogger(__name__)
+        logger.info("Making Dataset: {}".format(dataset_name))
         data = dataset_catalog.get(dataset_name)
         factory = getattr(D, data["factory"])
         args = data["args"]
@@ -95,7 +97,8 @@ def make_data_loader(cfg, is_train=True):
     path_catalog = import_file(
         "smoke.config.paths_catalog", cfg.PATHS_CATALOG, True
     )
-    DatasetCatalog = path_catalog.DatasetCatalog
+    # DatasetCatalog = path_catalog.DatasetCatalog
+    DatasetCatalog = path_catalog.NuscDatasetCatalog
 
     transforms = build_transforms(cfg, is_train)
     datasets = build_dataset(cfg, transforms, DatasetCatalog, is_train)

@@ -1,6 +1,33 @@
 import os
 
 
+class NuscDatasetCatalog():
+    DATA_DIR = "datasets"
+    DATASETS = {
+        "nusc_train": {
+            "root": "nuscenes/v1.0-trainval/",
+        },
+        "nusc_test": {
+            "root": "nuscenes/v1.0-test/",
+        },
+
+    }
+
+    @staticmethod
+    def get(name):
+        if "nusc" in name:
+            data_dir = NuscDatasetCatalog.DATA_DIR
+            attrs = NuscDatasetCatalog.DATASETS[name]
+            args = dict(
+                root = os.path.join(data_dir, attrs["root"]),
+            )
+            return dict(
+                factory="NuscenesDataset",
+                args=args,
+            )
+        raise RuntimeError("Dataset not available: {}".format(name))
+
+
 class DatasetCatalog():
     DATA_DIR = "datasets"
     DATASETS = {

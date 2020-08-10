@@ -109,7 +109,7 @@ class NuScenesDataset(Dataset):
         # Use only the samples from the current split.
         self.sample_tokens = self._split_to_samples(self.split_logs)
         self.image_count = len(self.sample_tokens)
-        # self.image_count = 100
+        self.image_count = 8000
         self.sample_tokens = self.sample_tokens[:self.image_count]
 
         # set sensor names

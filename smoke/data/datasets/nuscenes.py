@@ -29,13 +29,13 @@ from nuscenes.utils.splits import create_splits_logs
 
 TYPE_ID_CONVERSION = {
     'car': 0,
-    'truck':1,
-    'bus':2,
+    'pedestrian': 1,
+    'bicycle':2,
     'trailer': 3,
     'construction_vehicle':4,
-    'pedestrian': 5,
+    'truck':5,
     'motorcycle':6,
-    'bicycle':7,
+    'bus':7,
     'traffic_cone':8,
     'barrier':9
 }
@@ -109,8 +109,12 @@ class NuScenesDataset(Dataset):
         # Use only the samples from the current split.
         self.sample_tokens = self._split_to_samples(self.split_logs)
         self.image_count = len(self.sample_tokens)
-        self.image_count = 100
+        # self.image_count = 100
         self.sample_tokens = self.sample_tokens[:self.image_count]
+
+        # set sensor names
+        self.cam_name = 'CAM_FRONT'
+        self.lidar_name = 'LIDAR_TOP'
 
         self.logger = logging.getLogger(__name__)
         self.logger.info("Initializing nuScenes {} set with {} files loaded".format(self.split, self.image_count))
@@ -190,9 +194,13 @@ class NuScenesDataset(Dataset):
 
         # Create calibration matrix.
         K = p_left_kitti
-        K = [float(i) for i in K]
+        print(K)
+        print(K.shape)
+        #K = [float(i) for i in K]
         K = np.array(K, dtype=np.float32).reshape(3, 4)
         K = K[:3, :3]
+        print("K after: {}".format(K))
+        print(K.shape)
 
         # populate the list of object annotations for this sample
         anns = []

@@ -25,7 +25,7 @@ from nuscenes.nuscenes import NuScenes
 from nuscenes.utils.data_classes import LidarPointCloud, Box
 from nuscenes.utils.geometry_utils import BoxVisibility, transform_matrix
 from nuscenes.utils.kitti import KittiDB
-from nuscenes.utils.splits import create_split_logs
+from nuscenes.utils.splits import create_splits_logs
 
 TYPE_ID_CONVERSION = {
     'car': 0,
@@ -45,14 +45,16 @@ class NuScenesDataset(Dataset):
     def __init__(self, cfg, root, is_train=True, transforms=None):
         super(NuScenesDataset, self).__init__()
         self.root = root
+        """
         self.image_dir = os.path.join(root, "image_2")
         self.label_dir = os.path.join(root, "label_2")
         self.calib_dir = os.path.join(root, "calib")
-
+        """
         self.split = cfg.DATASETS.TRAIN_SPLIT if is_train else cfg.DATASETS.TEST_SPLIT
         self.is_train = is_train
         self.transforms = transforms
 
+        """
         if self.split == "train":
             imageset_txt = os.path.join(root, "ImageSets", "train.txt")
         elif self.split == "val":
@@ -63,7 +65,7 @@ class NuScenesDataset(Dataset):
             imageset_txt = os.path.join(root, "ImageSets", "test.txt")
         else:
             raise ValueError("Invalid split!")
-
+        
         image_files = []
         for line in open(imageset_txt, "r"):
             base_name = line.replace("\n", "")
@@ -72,6 +74,7 @@ class NuScenesDataset(Dataset):
         self.image_files = image_files
         self.label_files = [i.replace(".png", ".txt") for i in self.image_files]
         self.num_samples = len(self.image_files)
+        """
         self.classes = cfg.DATASETS.DETECT_CLASSES
 
         self.flip_prob = cfg.INPUT.FLIP_PROB_TRAIN if is_train else 0
@@ -85,23 +88,32 @@ class NuScenesDataset(Dataset):
         self.output_height = self.input_height // cfg.MODEL.BACKBONE.DOWN_RATIO
         self.max_objs = cfg.DATASETS.MAX_OBJECTS
 
-        self.logger = logging.getLogger(__name__)
-        self.logger.info("Initializing KITTI {} set with {} files loaded".format(self.split, self.num_samples))
+        #self.logger = logging.getLogger(__name__)
+        #self.logger.info("Initializing nuScenes {} set with {} files loaded".format(self.split, self.num_samples))
 
         # NuScenes specific stuff here
         # KITTI unwanted lines not yet deleted above
         # Select subset of the data to look at.
-        nusc_version = 'v1.0'
-        self.nusc = NuScenes(version=nusc_version)
+        self.cur_path = os.getcwd()
+        self.root = "./datasets/nuscenes"
+        self.dataroot = os.path.join(self.cur_path, self.root)
+        if self.split == "train" or self.split == "val" or self.split == "trainval":
+            nusc_version = 'v1.0-trainval'
+        else:
+            nusc_version = 'v1.0-test'
+        self.nusc = NuScenes(version=nusc_version, dataroot=self.dataroot)
 
         # Get assignment of scenes to splits.
-        self.split_logs = create_split_logs(self.split, self.nusc)
+        self.split_logs = create_splits_logs(self.split, self.nusc)
 
         # Use only the samples from the current split.
         self.sample_tokens = self._split_to_samples(self.split_logs)
         self.image_count = len(self.sample_tokens)
         self.image_count = 100
         self.sample_tokens = self.sample_tokens[:self.image_count]
+
+        self.logger = logging.getLogger(__name__)
+        self.logger.info("Initializing nuScenes {} set with {} files loaded".format(self.split, self.image_count))
 
     def __len__(self):
         return self.image_count

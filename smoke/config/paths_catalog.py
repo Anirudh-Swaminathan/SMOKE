@@ -22,7 +22,7 @@ class NuscDatasetCatalog():
                 root = os.path.join(data_dir, attrs["root"]),
             )
             return dict(
-                factory="NuscenesDataset",
+                factory="NuScenesDataset",
                 args=args,
             )
         raise RuntimeError("Dataset not available: {}".format(name))

@@ -118,6 +118,7 @@ class NuScenesDataset(Dataset):
         self.lidar_name = 'LIDAR_TOP'
 
         self.logger.info("Initializing nuScenes {} set with {} files loaded".format(self.split, self.image_count))
+        self.its = 0
 
     def __len__(self):
         return self.image_count
@@ -140,8 +141,9 @@ class NuScenesDataset(Dataset):
 
     def __getitem__(self, idx):
         # self.logger.info("IN NuScenesDataset __getitem__({})".format(idx))
-        if idx%1000 == 0 or idx == 1:
-            self.logger.info("NuScenesDataset __getitem__()- idx / image_count: {} / {}".format(idx, self.image_count))
+        self.its += 1
+        if self.its%1000 == 0 or self.its == 1:
+            self.logger.info("NuScenesDataset __getitem__({})- its / image_count: {} / {}".format(idx, self.its, self.image_count))
         # set defaults here
         kitti_to_nu_lidar = Quaternion(axis=(0, 0, 1), angle=np.pi / 2)
         kitti_to_nu_lidar_inv = kitti_to_nu_lidar.inverse
@@ -155,7 +157,7 @@ class NuScenesDataset(Dataset):
         sample_annotation_tokens = sample['anns']
         cam_front_token = sample['data'][self.cam_name]
         lidar_token = sample['data'][self.lidar_name]
-        if idx%1000 == 0 or idx == 1:
+        if self.its%1000 == 0 or self.its == 1:
             self.logger.info("NuScenesDataset __getitem__({}) sample obtained".format(idx))
 
         # Retrieve sensor records.
@@ -163,7 +165,7 @@ class NuScenesDataset(Dataset):
         sd_record_lid = self.nusc.get('sample_data', lidar_token)
         cs_record_cam = self.nusc.get('calibrated_sensor', sd_record_cam['calibrated_sensor_token'])
         cs_record_lid = self.nusc.get('calibrated_sensor', sd_record_lid['calibrated_sensor_token'])
-        if idx%1000 == 0 or idx == 1:
+        if self.its%1000 == 0 or self.its == 1:
             self.logger.info("NuScenesDataset __getitem__({}) sensor records obtained".format(idx))
 
         # Combine transformations and convert to KITTI format.
@@ -202,12 +204,12 @@ class NuScenesDataset(Dataset):
 
         # Create calibration matrix.
         K = p_left_kitti
-        if idx%1000 == 0 or idx == 1:
+        if self.its%1000 == 0 or self.its == 1:
             self.logger.info("NuScenesDataset __getitem__({}) K: {}, K.shape: {}".format(idx, K, K.shape))
         #K = [float(i) for i in K]
         K = np.array(K, dtype=np.float32).reshape(3, 4)
         K = K[:3, :3]
-        if idx%1000 == 0 or idx == 1:
+        if self.its%1000 == 0 or self.its == 1:
             self.logger.info("NuScenesDataset __getitem__({}) K: {}, K.shape: {}".format(idx, K, K.shape))
 
         # populate the list of object annotations for this sample
@@ -267,7 +269,7 @@ class NuScenesDataset(Dataset):
                         })
 
 
-        if idx%1000 == 0 or idx == 1:
+        if self.its%1000 == 0 or self.its == 1:
             self.logger.info("NuScenesDataset __getitem__({}) annotations: {}".format(idx, anns))
         center = np.array([i / 2 for i in img.size], dtype=np.float32)
         size = np.array([i for i in img.size], dtype=np.float32)
@@ -387,7 +389,7 @@ class NuScenesDataset(Dataset):
 
         if self.transforms is not None:
             img, target = self.transforms(img, target)
-        if idx%1000 == 0 or idx == 1:
+        if self.its%1000 == 0 or self.its == 1:
             self.logger.info("NuScenesDataset __getitem__({})\n img shape: {}, type: {}\ntarget: {}".format(idx, img.shape, type(img), target))
 
         return img, target, idx

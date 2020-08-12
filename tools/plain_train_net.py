@@ -17,8 +17,11 @@ from smoke.engine.trainer import do_train
 from smoke.modeling.detector import build_detection_model
 from smoke.engine.test_net import run_test
 
+import logging
 
 def train(cfg, model, device, distributed):
+    l = logging.getLogger(__name__)
+    l.info("train() called")
     optimizer = make_optimizer(cfg, model)
     scheduler = make_lr_scheduler(cfg, optimizer)
 
@@ -64,6 +67,8 @@ def setup(args):
 
 
 def main(args):
+    logger = logging.getLogger(__name__)
+    logger.info("main() function starting")
     cfg = setup(args)
 
     model = build_detection_model(cfg)

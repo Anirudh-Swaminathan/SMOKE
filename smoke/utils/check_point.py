@@ -26,6 +26,7 @@ class Checkpointer():
         if logger is None:
             logger = logging.getLogger(__name__)
         self.logger = logger
+        self.logger.info("Checkpointer() constructor called")
 
     def save(self, name, **kwargs):
         if not self.save_dir:
@@ -111,6 +112,8 @@ class DetectronCheckpointer(Checkpointer):
             model, optimizer, scheduler, save_dir, save_to_disk, logger
         )
         self.cfg = cfg.clone()
+        if logger is not None:
+            logger.info("DetectronCheckpointer constructor called")
 
     def _load_file(self, f):
         if f.startswith("catalog://"):

@@ -1,7 +1,10 @@
 import torch
+import logging
 
 
 def make_optimizer(cfg, model):
+    l = logging.getLogger(__name__)
+    l.info("make_optimizer called")
     params = []
     for key, value in model.named_parameters():
         if not value.requires_grad:
@@ -17,6 +20,8 @@ def make_optimizer(cfg, model):
 
 
 def make_lr_scheduler(cfg, optimizer):
+    l = logging.getLogger(__name__)
+    l.info("make_lr_scheduler called")
     return torch.optim.lr_scheduler.MultiStepLR(
         optimizer,
         cfg.SOLVER.STEPS

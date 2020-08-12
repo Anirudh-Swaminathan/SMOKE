@@ -60,6 +60,8 @@ def build_dataset(cfg, transforms, dataset_catalog, is_train=True):
 
 
 def make_data_loader(cfg, is_train=True):
+    l = logging.getLogger(__name__)
+    l.info("make_data_loader called")
     num_gpus = get_world_size()
     if is_train:
         images_per_batch = cfg.SOLVER.IMS_PER_BATCH

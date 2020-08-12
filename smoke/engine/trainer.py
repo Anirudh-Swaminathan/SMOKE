@@ -57,6 +57,10 @@ def do_train(
 
     for data, iteration in zip(data_loader, range(start_iter, max_iter)):
         data_time = time.time() - end
+        if iteration % 1000 == 0:
+            logger.info("Training in iteration: {}".format(iteration))
+            dts = str(datetime.timedelta(seconds=data_time))
+            logger.info("Data Time at iteration {} is: {}".format(iteration, dts))
         iteration += 1
         arguments["iteration"] = iteration
 
@@ -64,6 +68,8 @@ def do_train(
         targets = [target.to(device) for target in data["targets"]]
 
         loss_dict = model(images, targets)
+        if iteration == 1:
+            logger.info("First iteraton forward-prop done!")
 
         losses = sum(loss for loss in loss_dict.values())
 
@@ -80,6 +86,9 @@ def do_train(
         batch_time = time.time() - end
         end = time.time()
         meters.update(time=batch_time, data=data_time)
+        if iteration == 1:
+            bts = str(datetime.timedelta(seconds=batch_time))
+            logger.info("First iteration backprop done in {} time!".format(bts))
 
         eta_seconds = meters.time.global_avg * (max_iter - iteration)
         eta_string = str(datetime.timedelta(seconds=int(eta_seconds)))
@@ -92,7 +101,7 @@ def do_train(
                         "iter: {iter}",
                         "{meters}",
                         "lr: {lr:.8f}",
-                        "max men: {memory:.0f}",
+                        "max mem: {memory:.0f}",
                     ]
                 ).format(
                     eta=eta_string,

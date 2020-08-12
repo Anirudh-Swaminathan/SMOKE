@@ -55,6 +55,7 @@ def do_train(
     start_training_time = time.time()
     end = time.time()
 
+    logger.info("\n\n---Starting {} Iterations!!\n\n---".format(max_iter))
     for data, iteration in zip(data_loader, range(start_iter, max_iter)):
         data_time = time.time() - end
         if iteration % 1000 == 0:

@@ -5,15 +5,23 @@ from .smoke_predictor import make_smoke_predictor
 from .loss import make_smoke_loss_evaluator
 from .inference import make_smoke_post_processor
 
+import logging
+
 
 class SMOKEHead(nn.Module):
     def __init__(self, cfg, in_channels):
         super(SMOKEHead, self).__init__()
 
+        self.logger = logging.getLogger(__name__)
+        self.logger.info("In SMOKEHead() __init__(). Calling make_smoke_predictor()")
+
         self.cfg = cfg.clone()
         self.predictor = make_smoke_predictor(cfg, in_channels)
+        self.logger.info("Back in SMOKEHead constructor. Calling make_smoke_loss_evaluator()")
         self.loss_evaluator = make_smoke_loss_evaluator(cfg)
+        self.logger.info("Back in SMOKEHead constructor. Calling make_smoke_post_processor()")
         self.post_processor = make_smoke_post_processor(cfg)
+        self.logger.info("End of SMOKEHead constructor")
 
     def forward(self, features, targets=None):
         x = self.predictor(features)
@@ -30,4 +38,6 @@ class SMOKEHead(nn.Module):
 
 
 def build_smoke_head(cfg, in_channels):
+    logger = logging.getLogger(__name__)
+    logging.info("IN build_smoke_head(). Initializing object")
     return SMOKEHead(cfg, in_channels)

@@ -1,7 +1,11 @@
 from . import transforms as T
 
+import logging
+
 
 def build_transforms(cfg, is_train=True):
+    l = logging.getLogger(__name__)
+    l.info("IN build_transforms()")
     to_bgr = cfg.INPUT.TO_BGR
 
     normalize_transform = T.Normalize(

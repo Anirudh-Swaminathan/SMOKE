@@ -1,6 +1,8 @@
 import torch
 from torch import nn
 
+import logging
+
 from smoke.structures.image_list import to_image_list
 
 from ..backbone import build_backbone
@@ -18,8 +20,13 @@ class KeypointDetector(nn.Module):
     def __init__(self, cfg):
         super(KeypointDetector, self).__init__()
 
+        self.logger = logging.getLogger(__name__)
+
+        self.logger.info("KeypointDetector __init__(). Calling build_backbone()")
         self.backbone = build_backbone(cfg)
+        self.logger.info("Back in KeypointDetector __init__(). Calling build_heads()")
         self.heads = build_heads(cfg, self.backbone.out_channels)
+        self.logger.info("End of KeypointDetector constructor")
 
     def forward(self, images, targets=None):
         """

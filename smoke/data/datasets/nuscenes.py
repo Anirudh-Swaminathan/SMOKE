@@ -139,6 +139,7 @@ class NuScenesDataset(Dataset):
         return samples
 
     def __getitem__(self, idx):
+        # self.logger.info("IN NuScenesDataset __getitem__({})".format(idx))
         if idx%1000 == 0 or idx == 1:
             self.logger.info("NuScenesDataset __getitem__()- idx / image_count: {} / {}".format(idx, self.image_count))
         # set defaults here

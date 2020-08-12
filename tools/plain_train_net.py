@@ -21,9 +21,11 @@ import logging
 
 def train(cfg, model, device, distributed):
     l = logging.getLogger(__name__)
-    l.info("train() called")
+    l.info("IN train()\n Calling make_optimizer()")
     optimizer = make_optimizer(cfg, model)
+    l.info("Back in train(). Calling make_lr_scheduler()")
     scheduler = make_lr_scheduler(cfg, optimizer)
+    l.info("Back in train(). Calling DetectronCheckpointer")
 
     arguments = {}
     arguments["iteration"] = 0
@@ -36,10 +38,12 @@ def train(cfg, model, device, distributed):
     extra_checkpoint_data = checkpointer.load(cfg.MODEL.WEIGHT)
     arguments.update(extra_checkpoint_data)
 
+    l.info("Back in train(). Calling make_data_loader()")
     data_loader = make_data_loader(
         cfg,
         is_train=True,
     )
+    l.info("Back in train(). Calling do_train()")
 
     checkpoint_period = cfg.SOLVER.CHECKPOINT_PERIOD
 
@@ -55,9 +59,12 @@ def train(cfg, model, device, distributed):
         checkpoint_period,
         arguments
     )
+    l.info("END of train()")
 
 
 def setup(args):
+    logger = logging.getLogger(__name__)
+    logging.info("setup() called with args: {}\nReturning to main()".format(args))
     cfg.merge_from_file(args.config_file)
     cfg.merge_from_list(args.opts)
     cfg.freeze()
@@ -68,10 +75,12 @@ def setup(args):
 
 def main(args):
     logger = logging.getLogger(__name__)
-    logger.info("main() function starting")
+    logger.info("main() function starting! calling setup")
     cfg = setup(args)
 
+    logger.info("calling build_detection_model() now")
     model = build_detection_model(cfg)
+    logger.info("Back in main()")
     device = torch.device(cfg.MODEL.DEVICE)
     model.to(device)
 
@@ -90,6 +99,7 @@ def main(args):
             find_unused_parameters=True,
         )
 
+    logger.info("Calling train() method!")
     train(cfg, model, device, distributed)
 
 

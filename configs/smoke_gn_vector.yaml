@@ -8,12 +8,12 @@ DATASETS:
   # DETECT_CLASSES: ("Car", "Cyclist", "Pedestrian")
   DETECT_CLASSES: ("car", "bicycle", "pedestrian")
   TRAIN: ("nusc_train",)
-  # TEST: ("kitti_test",)
-  TEST: ("nusc_train", )
-#   TRAIN_SPLIT: "trainval"
+  TEST: ("kitti_test",)
+  # TEST: ("nusc_train", )
+  # TRAIN_SPLIT: "trainval"
   TRAIN_SPLIT: "train"
-  # TEST_SPLIT: "test"
-  TEST_SPLIT: "val"
+  TEST_SPLIT: "test"
+  # TEST_SPLIT: "val"
 SOLVER:
   BASE_LR: 2.5e-4
   # BASE_LR: 6.25e-5

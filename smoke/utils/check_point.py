@@ -26,7 +26,7 @@ class Checkpointer():
         if logger is None:
             logger = logging.getLogger(__name__)
         self.logger = logger
-        self.logger.info("Checkpointer() constructor called")
+        self.logger.info("In Checkpointer() constructor")
 
     def save(self, name, **kwargs):
         if not self.save_dir:

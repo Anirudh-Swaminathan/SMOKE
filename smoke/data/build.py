@@ -27,6 +27,8 @@ def build_dataset(cfg, transforms, dataset_catalog, is_train=True):
     Returns:
 
     '''
+    l = logging.getLogger(__name__)
+    l.info("IN build_dataset()")
     dataset_list = cfg.DATASETS.TRAIN if is_train else cfg.DATASETS.TEST
     if not isinstance(dataset_list, (list, tuple)):
         raise RuntimeError(
@@ -61,7 +63,7 @@ def build_dataset(cfg, transforms, dataset_catalog, is_train=True):
 
 def make_data_loader(cfg, is_train=True):
     l = logging.getLogger(__name__)
-    l.info("make_data_loader called")
+    l.info("IN make_data_loader(). Calling import_file()")
     num_gpus = get_world_size()
     if is_train:
         images_per_batch = cfg.SOLVER.IMS_PER_BATCH
@@ -99,11 +101,15 @@ def make_data_loader(cfg, is_train=True):
     path_catalog = import_file(
         "smoke.config.paths_catalog", cfg.PATHS_CATALOG, True
     )
+    l.info("Back in make_data_loader(). Calling NuscDatasetCatalog")
     # DatasetCatalog = path_catalog.DatasetCatalog
     DatasetCatalog = path_catalog.NuscDatasetCatalog
+    l.info("Back in make_data_loader(). Calling build_transforms()")
 
     transforms = build_transforms(cfg, is_train)
+    l.info("Back in make_data_loader(). Calling build_dataset()")
     datasets = build_dataset(cfg, transforms, DatasetCatalog, is_train)
+    l.info("Back in make_data_loader(). Iterations over datasets now")
 
     data_loaders = []
     for dataset in datasets:

@@ -4,6 +4,7 @@ import torch.distributed as dist
 import torch.multiprocessing as mp
 
 from smoke.utils import comm
+import logging
 
 __all__ = ["launch"]
 
@@ -36,6 +37,8 @@ def launch(main_func,
                        Can be set to auto to automatically select a free port on localhost
         args (tuple): arguments passed to main_func
     """
+    logger = logging.getLogger(__name__)
+    logger.info("Launch called! Next calling main()")
     world_size = num_machines * num_gpus_per_machine
     if world_size > 1:
         # https://github.com/pytorch/pytorch/pull/14391

@@ -44,6 +44,7 @@ TYPE_ID_CONVERSION = {
 class NuScenesDataset(Dataset):
     def __init__(self, cfg, root, is_train=True, transforms=None):
         super(NuScenesDataset, self).__init__()
+        self.logger = logging.getLogger(__name__)
         self.root = root
         """
         self.image_dir = os.path.join(root, "image_2")
@@ -116,7 +117,6 @@ class NuScenesDataset(Dataset):
         self.cam_name = 'CAM_FRONT'
         self.lidar_name = 'LIDAR_TOP'
 
-        self.logger = logging.getLogger(__name__)
         self.logger.info("Initializing nuScenes {} set with {} files loaded".format(self.split, self.image_count))
 
     def __len__(self):

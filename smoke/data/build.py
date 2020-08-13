@@ -101,9 +101,10 @@ def make_data_loader(cfg, is_train=True):
     path_catalog = import_file(
         "smoke.config.paths_catalog", cfg.PATHS_CATALOG, True
     )
-    l.info("Back in make_data_loader(). Calling NuscDatasetCatalog")
-    # DatasetCatalog = path_catalog.DatasetCatalog
-    DatasetCatalog = path_catalog.NuscDatasetCatalog
+    l.info("Back in make_data_loader(). Calling DatasetCatalog")
+    DatasetCatalog = path_catalog.DatasetCatalog
+    # l.info("Back in make_data_loader(). Calling NuscDatasetCatalog")
+    # DatasetCatalog = path_catalog.NuscDatasetCatalog
     l.info("Back in make_data_loader(). Calling build_transforms()")
 
     transforms = build_transforms(cfg, is_train)

@@ -50,7 +50,9 @@ _C.DATASETS.TRAIN_SPLIT = ""
 # test split for dataset
 _C.DATASETS.TEST_SPLIT = ""
 _C.DATASETS.DETECT_CLASSES = ("Car",)
-_C.DATASETS.MAX_OBJECTS = 30
+# _C.DATASETS.MAX_OBJECTS = 30
+# nuScenes -> more max objects possible
+_C.DATASETS.MAX_OBJECTS = 500
 
 # -----------------------------------------------------------------------------
 # DataLoader

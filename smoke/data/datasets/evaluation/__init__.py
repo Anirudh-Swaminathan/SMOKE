@@ -1,6 +1,9 @@
 from smoke.data import datasets
 
 from .kitti.kitti_eval import kitti_evaluation
+from .nuscenes.nuscenes_eval import nuscenes_evaluation
+
+import logging
 
 
 def evaluate(eval_type, dataset, predictions, output_folder):
@@ -15,6 +18,8 @@ def evaluate(eval_type, dataset, predictions, output_folder):
     Returns:
         evaluation result
     """
+    l = logging.getLogger(__name__)
+    l.info("IN evaluate()")
     args = dict(
         eval_type=eval_type,
         dataset=dataset,
@@ -24,6 +29,8 @@ def evaluate(eval_type, dataset, predictions, output_folder):
     )
     if isinstance(dataset, datasets.KITTIDataset):
         return kitti_evaluation(**args)
+    elif isinstance(dataset, datasets.NuScenesDataset):
+        return nuscenes_evaluation(**args)
     else:
         dataset_name = dataset.__class__.__name__
         raise NotImplementedError("Unsupported dataset type {}.".format(dataset_name))

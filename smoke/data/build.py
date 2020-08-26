@@ -137,15 +137,23 @@ def make_data_loader(cfg, is_train=True):
 
 
 def build_test_loader(cfg, is_train=False):
+    l = logging.getLogger(__name__)
+    l.info("IN build_test_loader()")
     path_catalog = import_file(
         "smoke.config.paths_catalog", cfg.PATHS_CATALOG, True
     )
-    DatasetCatalog = path_catalog.DatasetCatalog
+    # l.info("Calling DatasetCatalog")
+    # DatasetCatalog = path_catalog.DatasetCatalog
+    l.info("Calling NuscDatasetCatalog")
+    DatasetCatalog = path_catalog.NuscDatasetCatalog
 
+    l.info("Back in build_test_loader(). Calling build_transforms()")
     transforms = build_transforms(cfg, is_train)
+    l.info("Back in build_test_loader(). Calling build_dataset()")
     datasets = build_dataset(cfg, transforms, DatasetCatalog, is_train)
 
     data_loaders = []
+    l.info("Back in build_test_loader(). Iterating over test datasets")
     for dataset in datasets:
         sampler = samplers.InferenceSampler(len(dataset))
         batch_sampler = torch.utils.data.sampler.BatchSampler(

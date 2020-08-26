@@ -85,11 +85,14 @@ def main(args):
     model.to(device)
 
     if args.eval_only:
+        logger.info("Eval mode. Calling DetectronCheckpointer!")
         checkpointer = DetectronCheckpointer(
             cfg, model, save_dir=cfg.OUTPUT_DIR
         )
+        logger.info("Back in eval main()")
         ckpt = cfg.MODEL.WEIGHT if args.ckpt is None else args.ckpt
         _ = checkpointer.load(ckpt, use_latest=args.ckpt is None)
+        logger.info("Calling run_test!")
         return run_test(cfg, model)
 
     distributed = comm.get_world_size() > 1

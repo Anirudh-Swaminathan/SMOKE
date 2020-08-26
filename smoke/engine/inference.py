@@ -9,9 +9,12 @@ from smoke.data.datasets.evaluation import evaluate
 
 
 def compute_on_dataset(model, data_loader, device, timer=None):
+    l = logging.getLogger(__name__)
+    l.info("IN compute_on_dataset()")
     model.eval()
     results_dict = {}
     cpu_device = torch.device("cpu")
+    l.info("Iteration over batches!")
     for _, batch in enumerate(tqdm(data_loader)):
         images, targets, image_ids = batch["images"], batch["targets"], batch["img_ids"]
         images = images.to(device)
@@ -26,6 +29,7 @@ def compute_on_dataset(model, data_loader, device, timer=None):
         results_dict.update(
             {img_id: output for img_id in image_ids}
         )
+    l.info("END compute_on_dataset()")
     return results_dict
 
 
@@ -47,8 +51,10 @@ def inference(
     total_timer = Timer()
     inference_timer = Timer()
     total_timer.tic()
+    logger.info("Call compute_on_dataset()")
     predictions = compute_on_dataset(model, data_loader, device, inference_timer)
     comm.synchronize()
+    logger.info("Back in inference()")
 
     total_time = total_timer.toc()
     total_time_str = get_time_str(total_time)
@@ -68,6 +74,7 @@ def inference(
     if not comm.is_main_process():
         return
 
+    logger.info("END of inference(). Calling evaluate()")
     return evaluate(eval_type=eval_types,
                     dataset=dataset,
                     predictions=predictions,
